@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>手动实现双向绑定</title>
+</head>
+<body>
+  <input type="text" id="input"/>
+  <div id="value"></div>
+  <script>
+    (function(window){
+      var div = document.getElementById('value')
+      var input = document.getElementById("input")
+      var data = {}
+
+      Object.defineProperty(data, "value", {
+        get: function() {
+          return this._value;
+        },
+        set: function(newValue) {
+          console.log(`newValue === ${newValue}`)
+          div.innerHTML = newValue
+          this._value = newValue;
+        }
+      })
+
+      input.addEventListener('input', function(e){
+        data.value = e.target.value
+      }, false)
+    })(window)
+  </script>
+</body>
+</html>
