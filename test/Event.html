@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Event 事件测试</title>
+</head>
+<body>
+  <div id="button-container">
+    <button id="my-button">addEventListener监听点击事件</button>
+  </div>
+
+  <!-- 我们应该避免使用这种方式。因为它会使标记数量变大，而可读性却较差。 内容/结构 和 行为之间没有很好的分离，使得在处理bug时非常困难。 -->
+  <button onclick="alert('Button Click')">html节点属性监听点击事件</button>
+
+  <button id="my-button-1">Dom元素属性</button>
+
+  <button id="my-event">自定义事件测试</button>
+  <script>
+    var myButton = document.getElementById('my-button')
+    var myButtonContainer = document.getElementById('button-container')
+
+    var myButton1 = document.getElementById('my-button-1')
+    var myEventDom = document.getElementById('my-event')
+
+    // Internet Explorer 6-8不支持，提供了类似的方法element.attachEvent
+    myButton.addEventListener('click', function(e) {
+      console.log(e)
+      // 阻止冒泡
+      e.stopPropagation()
+    }, false)
+    // false：事件在冒泡阶段发生，true：事件在捕获阶段发生
+    myButtonContainer.addEventListener('click', function(e){
+      console.log('按钮盒子被点击')
+      // 会阻止该元素的其他事件发生，也包括事件的捕获和冒泡
+      e.stopImmediatePropagation()
+      // 是另外一个相关的方法，它可以阻止事件触发后默认动作的发生。
+      // e.preventDefault()
+    }, true)
+
+    // 这种方法的问题在于每个元素和事件只能设置一个处理函数。
+    myButton1.onclick = function (e) {
+      console.log(e)
+    }
+
+    // 自定义事件CustomEvent
+    var myEvent = new CustomEvent('my_event', {
+      detail: {
+        aaa: 123,
+        bbb: 234,
+      }
+    })
+    myEventDom.addEventListener('my_event', function(e) {
+      console.log(e)
+    })
+    // 自定义的事件由于不是JS内置的事件，所以我们需要用dispatchEvent方法在JS代码中去显式地触发它
+    myEventDom.dispatchEvent(myEvent)
+
+    // 自定义事件Event
+    var myEvent1 = new Event('my_event_1', {
+      bubbles: false, // 是否冒泡
+      cancelable: false, // 能否被取消
+      composed: false, // 是否会在影子DOM根节点之外触发侦听器
+    })
+    myEventDom.dispatchEvent(myEvent1)
+
+  </script>
+</body>
+</html>
