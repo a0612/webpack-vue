@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>es6 Proxy代理实现数据双向绑定</title>
+</head>
+<body>
+  <input type="text" id="input-name">
+  <input type="text" id="input-value">
+  </input>
+  <script>
+    var input = document.getElementById('input-name')
+    var inputValue = document.getElementById('input-value')
+
+    var target = {}
+    // 创建handler对象拦截所有的get操作，如果target里有该属性，就返回它，没有就输出数字：42
+    var handle = {
+      // 设置对象属性
+      "set": function(target, prop, value) {
+        console.log(`set target === ${JSON.stringify(target)}, prop === ${prop}, value === ${value}`)
+        target[prop] = value;
+        input.value = value;
+        inputValue.value = value;
+        return true;
+      },
+      // // 获取对象属性
+      // "get": function (target, sKey) {
+      //   return target[sKey] || target.getItem(sKey) || undefined;
+      // },
+      // // 删除对象属性
+      // "deleteProperty": function (target, sKey) {
+      //   if (sKey in target) { return false; }
+      //   return target.removeItem(sKey);
+      // },
+
+      // "enumerate": function (target, sKey) {
+      //   return target.keys();
+      // },
+      // // 访问Object.getOwnPropertyNames()
+      // "ownKeys": function (target, sKey) {
+      //   return target.keys();
+      // },
+      // "has": function (target, sKey) {
+      //   return sKey in target || target.hasItem(sKey);
+      // },
+      // // 定义或修改对象属性
+      // "defineProperty": function (target, sKey, oDesc) {
+      //   if (oDesc && "value" in oDesc) { target.setItem(sKey, oDesc.value); }
+      //   return target;
+      // },
+      // // 它返回undefined或属性的描述
+      // "getOwnPropertyDescriptor": function (target, sKey) {
+      //   var vValue = target.getItem(sKey);
+      //   return vValue ? {
+      //     "value": vValue,
+      //     "writable": true,
+      //     "enumerable": true,
+      //     "configurable": false
+      //   } : undefined;
+      // },
+    }
+    // 创建一个新的代理，
+    var proxy = new Proxy(target, handle)
+
+    function changeName (e) {
+      console.log(`修改target === ${e.target.value}`)
+      proxy.name = e.target.value
+    }
+    input.addEventListener('input', changeName, false)
+    inputValue.addEventListener('input', changeName, false)
+  </script>
+</body>
+</html>

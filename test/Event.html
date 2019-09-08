@@ -17,6 +17,8 @@
   <button id="my-button-1">Dom元素属性</button>
 
   <button id="my-event">自定义事件测试</button>
+
+  <a href="https://www.baidu.com" id='a'>aaaa</a>
   <script>
     var myButton = document.getElementById('my-button')
     var myButtonContainer = document.getElementById('button-container')
@@ -35,8 +37,6 @@
       console.log('按钮盒子被点击')
       // 会阻止该元素的其他事件发生，也包括事件的捕获和冒泡
       e.stopImmediatePropagation()
-      // 是另外一个相关的方法，它可以阻止事件触发后默认动作的发生。
-      // e.preventDefault()
     }, true)
 
     // 这种方法的问题在于每个元素和事件只能设置一个处理函数。
@@ -64,6 +64,11 @@
       composed: false, // 是否会在影子DOM根节点之外触发侦听器
     })
     myEventDom.dispatchEvent(myEvent1)
+
+    // 是另外一个相关的方法，它可以阻止事件触发后默认动作的发生。例如插入一个新节点，滚动条会自动滚动到顶部,阻止a标签的跳转
+    document.getElementById('a').addEventListener('click', function(e){
+      e.preventDefault();
+    }, false)
 
   </script>
 </body>
